@@ -4,7 +4,7 @@ import json
 import os
 
 class Pasien:
-    def __init__(self, nama, keluhan):
+    def _init_(self, nama, keluhan):
         self.nama = nama
         self.keluhan = keluhan
 
@@ -14,7 +14,7 @@ class Pasien:
 
 
 class ManajerAntrian:
-    def __init__(self):
+    def _init_(self):
         self.queue = []
         self.history = []
         self.filepath = "data_pasien.json"
@@ -56,7 +56,7 @@ class ManajerAntrian:
 
 
 class AplikasiKlinik:
-    def __init__(self, root):
+    def _init_(self, root):
         self.root = root
         self.root.title("Manajemen Antrian Klinik")
 
@@ -81,9 +81,13 @@ class AplikasiKlinik:
         self.left_frame = tk.Frame(root, width=270, height=400)
         self.left_frame.pack(side="left", fill="y")
 
-        tk.Label(self.left_frame, text="Nama dan Keluhan Pasien:", font=("Poppins", 11, "bold")).pack(pady=6)
+        tk.Label(self.left_frame, text="Nama Pasien:", font=("Poppins", 11, "bold")).pack(pady=6)
         self.entry_nama = tk.Entry(self.left_frame, width=26, font=("Poppins", 10))
         self.entry_nama.pack(pady=3)
+
+        tk.Label(self.left_frame, text="Keluhan:", font=("Poppins", 11, "bold")).pack(pady=6)
+        self.entry_keluhan = tk.Entry(self.left_frame, width=26, font=("Poppins", 10))
+        self.entry_keluhan.pack(pady=3)
 
         self.btn_tambah = tk.Button(self.left_frame, text="+ Tambah Pasien", width=20, command=self.tambah_pasien)
         self.btn_tambah.pack(pady=10)
@@ -127,6 +131,7 @@ class AplikasiKlinik:
             btn.config(bg=tema["btn"], fg=tema["fg"], relief="flat")
 
         self.entry_nama.config(bg="#FFFFFF", fg="#000000")
+        self.entry_keluhan.config(bg="#FFFFFF", fg="#000000")
         self.listbox.config(bg="#FFFFFF", fg="#000000")
 
         for frame in [self.left_frame, self.right_frame]:
@@ -139,14 +144,16 @@ class AplikasiKlinik:
         self.apply_theme()
 
     def tambah_pasien(self):
-        data = self.entry_nama.get()
+        nama = self.entry_nama.get()
+        keluhan = self.entry_keluhan.get()
 
-        if not data:
+        if not nama or not keluhan:
             messagebox.showwarning("Peringatan", "Nama dan keluhan harus diisi.")
             return
 
-        self.manajer.tambah_pasien(data, "")
+        self.manajer.tambah_pasien(nama, keluhan)
         self.entry_nama.delete(0, tk.END)
+        self.entry_keluhan.delete(0, tk.END)
         self.update_list()
 
     def panggil_pasien(self):
@@ -168,17 +175,17 @@ class AplikasiKlinik:
 
         pasien = self.manajer.daftar()[idx]
 
-        input_baru = simpledialog.askstring("Edit Pasien", "Masukkan data pasien baru:", initialvalue=pasien.nama
-        )
+        nama_baru = simpledialog.askstring("Edit Nama", "Nama baru:", initialvalue=pasien.nama)
+        keluhan_baru = simpledialog.askstring("Edit Keluhan", "Keluhan baru:", initialvalue=pasien.keluhan)
 
-        if input_baru and keluhan_baru:
+        if nama_baru and keluhan_baru:
             self.manajer.edit_pasien(idx, nama_baru, keluhan_baru)
             self.update_list()
 
     def update_list(self):
         self.listbox.delete(0, tk.END)
         for i, p in enumerate(self.manajer.daftar()):
-            self.listbox.insert(tk.END, f"{i+1}. {p.nama}")
+            self.listbox.insert(tk.END, f"{i+1}. {p.nama} | {p.keluhan}")
 
     def warning_antrian_panjang(self):
         if len(self.manajer.daftar()) >= 6:
@@ -186,7 +193,7 @@ class AplikasiKlinik:
         self.root.after(7000, self.warning_antrian_panjang)
 
 
-if __name__ == "__main__":
+if _name_ == "_main_":
     root = tk.Tk()
     app = AplikasiKlinik(root)
     root.mainloop()
