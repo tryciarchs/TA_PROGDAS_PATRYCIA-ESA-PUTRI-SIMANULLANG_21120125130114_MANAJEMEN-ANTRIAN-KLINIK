@@ -4,7 +4,7 @@ import json
 import os
 
 class Pasien:
-    def _init_(self, nama, keluhan):
+    def __init__(self, nama, keluhan):
         self.nama = nama
         self.keluhan = keluhan
 
@@ -14,7 +14,7 @@ class Pasien:
 
 
 class ManajerAntrian:
-    def _init_(self):
+    def __init__(self):
         self.queue = []
         self.history = []
         self.filepath = "data_pasien.json"
@@ -56,7 +56,7 @@ class ManajerAntrian:
 
 
 class AplikasiKlinik:
-    def _init_(self, root):
+    def __init__(self, root):
         self.root = root
         self.root.title("Manajemen Antrian Klinik")
 
@@ -193,7 +193,7 @@ class AplikasiKlinik:
         self.root.after(7000, self.warning_antrian_panjang)
 
 
-if _name_ == "_main_":
+if __name__ == "__main__":    
     root = tk.Tk()
     app = AplikasiKlinik(root)
     root.mainloop()
